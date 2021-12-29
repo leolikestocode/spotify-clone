@@ -1,0 +1,21 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  weekday_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Defining spotify env variables"
+        env:
+          NEXTAUTH_URL: https://leolikestocode.github.io/spotify-clone
+          NEXT_PUBLIC_CLIENT_SECRET: 839bea8120204aa7b2eb3ff98de5c1a2
+          NEXT_PUBLIC_CLIENT_ID: d8d71b1255e44dcb8e94612d5998141b
+          JWT_SECRET: super_secret_value

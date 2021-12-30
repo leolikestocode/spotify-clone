@@ -9,9 +9,6 @@ export async function middleware(req) {
 
   // Allow the requests if the following is true
 
-  console.log(`token`, token);
-  console.log(`pathname`, pathname);
-
   if (token && pathname === "/login") {
     return NextResponse.redirect("/");
   }

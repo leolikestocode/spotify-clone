@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
+import { playlistSongsState } from "../atoms/playlistAtom";
 import useSpotify from "../hooks/useSpotify";
 import useSongInfo from "../hooks/useSongInfo";
 import { VolumeUpIcon as VolumeDownIcon } from "@heroicons/react/outline";
@@ -16,15 +17,21 @@ import {
 } from "@heroicons/react/solid";
 import { debounce } from "lodash";
 
+const getCurrentIndexSong = (playlistSongs, currentTrackId) =>
+  playlistSongs.findIndex((song) => song.id === currentTrackId);
+
 function Player() {
   const spotifyApi = useSpotify();
+  const [msProgress, setMsProgress] = useState(0);
+  const [isPrevDisabled, setIsPrevDisabled] = useState(false);
+  const [isNextDisabled, setIsNextDisabled] = useState(false);
   const { data: session } = useSession();
+  const songInfo = useSongInfo();
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
+  const playlistSongs = useRecoilValue(playlistSongsState);
   const [volume, setVolume] = useState(50);
-
-  const songInfo = useSongInfo();
 
   const fetchCurrentSong = () => {
     if (!songInfo) {
@@ -33,7 +40,6 @@ function Player() {
 
         spotifyApi.getMyCurrentPlaybackState().then((data) => {
           setIsPlaying(data.body?.is_playing);
-          setVolume(50);
         });
       });
     }
@@ -51,6 +57,28 @@ function Player() {
     });
   };
 
+  const playSong = (handler) => {
+    const currentIndexSong = getCurrentIndexSong(playlistSongs, currentTrackId);
+
+    if (
+      (currentIndexSong === 0 && handler === "prev") ||
+      (currentIndexSong === playlistSongs.length - 1 && handler === "next")
+    ) {
+      return;
+    }
+
+    const songIndex =
+      handler === "next" ? currentIndexSong + 1 : currentIndexSong - 1;
+
+    const track = playlistSongs[songIndex];
+
+    setCurrentTrackId(track.id);
+    setIsPlaying(true);
+    spotifyApi.play({
+      uris: [track.uri],
+    });
+  };
+
   const debounceAdjustVolume = useCallback(
     debounce((volume) => {
       spotifyApi.setVolume(volume).catch(() => {});
@@ -65,10 +93,28 @@ function Player() {
   }, [currentTrackId, spotifyApi, session]);
 
   useEffect(() => {
-    if (volume > 0 && volume < 100) {
+    const currentIndexSong = getCurrentIndexSong(playlistSongs, currentTrackId);
+
+    setIsPrevDisabled(currentIndexSong === 0);
+    setIsNextDisabled(currentIndexSong === playlistSongs.length - 1);
+  }, [currentTrackId]);
+
+  useEffect(() => {
+    if (volume >= 0 && volume <= 100) {
       debounceAdjustVolume(volume);
     }
   }, [volume]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      spotifyApi.getMyCurrentPlayingTrack().then(({ body }) => {
+        setMsProgress(body.progress_ms);
+        if (body.progress_ms === 0) {
+          playSong("next");
+        }
+      });
+    }, 2000);
+  }, [msProgress, currentTrackId]);
 
   return (
     <div className="h-24 bg-gradient-to-b from-black to gray-900 text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8">
@@ -90,19 +136,26 @@ function Player() {
       <div className="flex items-center justify-evenly">
         <SwitchHorizontalIcon className="button" />
         <RewindIcon
-          // onClick={() => spotifyApi.skipToPrevious()} // API not working
-          className="button"
+          onClick={() => !isPrevDisabled && playSong("prev")}
+          className={`button ${
+            isPrevDisabled ? "opacity-50 cursor-default" : ""
+          }`}
         />
 
         {isPlaying ? (
           <PauseIcon onClick={handlePlayPause} className="button w-10 h-10" />
         ) : (
-          <PlayIcon onClick={handlePlayPause} className="button w-10 h-10" />
+          <PlayIcon
+            onClick={handlePlayPause}
+            className="button w-10 h-10 opacity-50"
+          />
         )}
 
         <FastForwardIcon
-          // onClick={() => spotifyApi.skipToPrevious()} // API not working
-          className="button"
+          onClick={() => !isNextDisabled && playSong("next")}
+          className={`button ${
+            isNextDisabled ? "opacity-50 cursor-default" : ""
+          }`}
         />
         <ReplyIcon className="button" />
       </div>

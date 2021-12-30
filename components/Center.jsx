@@ -3,9 +3,14 @@ import { useEffect, useState } from "react";
 import { shuffle } from "lodash";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { signOut } from "next-auth/react";
+import { UserCircleIcon } from "@heroicons/react/solid";
 
 import useSpotify from "../hooks/useSpotify";
-import { playlistIdState, playlistState } from "../atoms/playlistAtom";
+import {
+  playlistIdState,
+  playlistState,
+  playlistSongsState,
+} from "../atoms/playlistAtom";
 import Songs from "./Songs";
 
 const colors = [
@@ -24,6 +29,7 @@ function Center() {
   const [color, setColor] = useState(null);
   const playlistId = useRecoilValue(playlistIdState);
   const [playlist, setPlaylist] = useRecoilState(playlistState);
+  const [playlistSongs, setPlaylistSongs] = useRecoilState(playlistSongsState);
 
   useEffect(() => {
     setColor(shuffle(colors).pop());
@@ -32,21 +38,34 @@ function Center() {
   useEffect(() => {
     spotifyApi
       .getPlaylist(playlistId)
-      .then(({ body }) => setPlaylist(body))
+      .then(({ body }) => {
+        setPlaylist(body);
+        setPlaylistSongs(
+          body.tracks.items.map((item) => ({
+            id: item.track.id,
+            uri: item.track.uri,
+          }))
+        );
+      })
       .catch((err) => console.log("error in getting playlist", err));
   }, [spotifyApi, playlistId]);
-
-  console.log(`playlist`, playlist);
 
   return (
     <div className="flex-grow h-screen overflow-y-scroll">
       <header className="absolute top-5 right-8">
-        <div className="flex items-center bg-black space-x-3 opacity-90 hover:opacity-80 cursor-pointer rounded-full p-1 pr-2 text-white" onClick={signOut}>
-          <img
-            className="rounded-full w-10 h-10"
-            src={session?.user.image}
-            alt="User image"
-          />
+        <div
+          className="flex items-center bg-black space-x-3 opacity-90 hover:opacity-80 cursor-pointer rounded-full p-1 pr-2 text-white"
+          onClick={signOut}
+        >
+          {session?.user.image ? (
+            <img
+              className="rounded-full w-10 h-10"
+              src={session.user.image}
+              alt="User image"
+            />
+          ) : (
+            <UserCircleIcon className="h5 w-5" />
+          )}
           <h2>{session?.user.name}</h2>
         </div>
       </header>

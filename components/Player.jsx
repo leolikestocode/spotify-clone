@@ -123,7 +123,7 @@ function Player() {
         <img
           className="hidden md:inline h-10 w-10"
           src={songInfo?.album.images?.[0]?.url}
-          alt=""
+          alt="album tracks"
         />
         <div>
           <h3>{songInfo?.name}</h3>

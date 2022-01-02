@@ -4,7 +4,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+      NEXTAUTH_URL: https://leolikestocode.github.io/spotify-clone
       NEXT_PUBLIC_CLIENT_SECRET: ${{ secrets.NEXT_PUBLIC_CLIENT_SECRET }}
       NEXT_PUBLIC_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_CLIENT_ID }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}

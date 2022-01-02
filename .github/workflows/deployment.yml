@@ -8,9 +8,9 @@ jobs:
         node-version: [16.x]
     env:
       NEXTAUTH_URL: https://leolikestocode.github.io/spotify-clone
-      NEXT_PUBLIC_CLIENT_SECRET: ${{ secrets.NEXT_PUBLIC_CLIENT_SECRET }}
-      NEXT_PUBLIC_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_CLIENT_ID }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      NEXT_PUBLIC_CLIENT_SECRET: 839bea8120204aa7b2eb3ff98de5c1a2
+      NEXT_PUBLIC_CLIENT_ID: d8d71b1255e44dcb8e94612d5998141b
+      JWT_SECRET: super_secret_value
 
     steps:
       - name: Checkout 🛎️

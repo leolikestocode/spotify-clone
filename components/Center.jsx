@@ -62,6 +62,8 @@ function Center() {
               className="rounded-full w-10 h-10"
               src={session.user.image}
               alt="User image"
+              width="40"
+              height="40"
             />
           ) : (
             <UserCircleIcon className="h5 w-5" />
@@ -75,8 +77,10 @@ function Center() {
       >
         <img
           className="h-44 w-44 shadow-2xl"
-          src={playlist?.images[0]?.url}
+          src={playlist?.images[0]?.url.replace("large", "medium")}
           alt={playlist?.name}
+          width="176"
+          height="176"
         />
         <div>
           <p>PLAYLIST</p>

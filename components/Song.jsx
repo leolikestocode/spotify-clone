@@ -19,12 +19,24 @@ function Song({ track, order }) {
   };
 
   return (
-    <div className="grid grid-cols-2 text-gray-500 py-2 px-5 hover:bg-gray-900 rounded-lg cursor-pointer">
+    <div className="grid grid-cols-2 text-gray-400 py-2 px-5 hover:bg-gray-900 rounded-lg cursor-pointer">
       <div className="flex items-center space-x-4" onClick={playSong}>
         <p>{order + 1}</p>
-        <img className="h-10 w-10" src={track.album.images[0].url} alt="" />
+        <img
+          className="h-10 w-10"
+          src={track.album.images[2].url}
+          alt="track image"
+          width="40"
+          height="40"
+        />
         <div>
-          <p className="w-36 lg:w-64 text-white truncate">{track.name}</p>
+          <p
+            className={`w-36 lg:w-64 truncate ${
+              track.id === currentTrackId ? "text-green-500" : "text-white"
+            }`}
+          >
+            {track.name}
+          </p>
           <p className="w-40">{track.artists[0].name}</p>
         </div>
       </div>

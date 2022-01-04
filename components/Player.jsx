@@ -154,7 +154,7 @@ function Player() {
       </div>
 
       {/* Center */}
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-center">
         <div className="flex items-center justify-evenly">
           <SwitchHorizontalIcon
             className={`button${isRandomSongs ? " text-green-500" : ""}`}
@@ -192,7 +192,7 @@ function Player() {
             }
           />
         </div>
-        <div className="flex justify-between">
+        <div className="hidden md:flex justify-between">
           <span className="text-white w-7">
             {millisToMinutesAndSeconds(msProgress)}
           </span>

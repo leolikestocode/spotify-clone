@@ -22,3 +22,11 @@ This is a spotify clone made with Next js v12, Tailwind, Spotify API, Recoil
 - Log in with your spotify account and allow to use Spotify Api rules.
 
 - It's necessary to start a spotify player app or web. (Just start a song with spotify an then you can control the playlists and songs with the app)
+
+## Preview
+
+- Live at: https://spotify-clone-leolikestocode.vercel.app/
+
+- Presentation video:
+
+[![IMAGE ALT TEXT HERE](https://miro.medium.com/max/1400/1*_KSPyxBt9qrwlh7RaQZQJQ.jpeg)](https://drive.google.com/file/d/1LLFncxlmxChJoXQSMY6waZ4w2deDJHaU/view?usp=sharing)
